@@ -1,5 +1,5 @@
-#ifndef LIBINTERFACE
-#define LIBINTERFACE
+#ifndef LIBINTERFACE_HH
+#define LIBINTERFACE_HH
 
 #include <string>
 #include <dlfcn.h>

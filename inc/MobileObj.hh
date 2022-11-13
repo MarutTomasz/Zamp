@@ -58,6 +58,20 @@
         */
        Vector3D  _Position_m;
 
+
+
+      
+       /*!
+        * \brief Wartości skalujące rozmiar obiektu.
+	*
+	* Wartości skalujące rozmiar obiektu.
+        */
+       Vector3D  _Scale;
+
+
+
+
+      
        /*!
         * \brief Nazwa obiektu, która go indentyfikuje.
         *
@@ -133,6 +147,10 @@
        *                     że są one wyrażone w metrach.
        */
        void SetPosition_m(const Vector3D &rPos_m) { _Position_m = rPos_m; }
+
+
+      Vector3D & UseScale() { return _Scale; }
+      void SetScale(const Vector3D &rScale) { _Scale = rScale; }
 
 
       /*!

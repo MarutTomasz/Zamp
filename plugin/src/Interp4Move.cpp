@@ -87,5 +87,5 @@ Interp4Command* Interp4Move::CreateCmd()
  */
 void Interp4Move::PrintSyntax() const
 {
-  cout << "   Move  NazwaObiektu  Szybkosc[m/s]  DlugoscDrogi[m]" << endl;
+  cout << "   Move  NazwaObiektu  Prędkość[m/s]  DlugoscDrogi[m]" << endl;
 }

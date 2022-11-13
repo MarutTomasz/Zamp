@@ -5,6 +5,9 @@
 #include "LibInterface.hh"
 #include "Set4LibInterfaces.hh"
 #include <sstream>
+#include <vector>
+#include "Testy.hh"
+
 
 #include <xercesc/sax2/SAX2XMLReader.hpp>
 #include <xercesc/sax2/XMLReaderFactory.hpp>
@@ -13,12 +16,10 @@
 #include "xmlinterp.hh"
 #include <list>
 
-
 #define LINE_SIZE 500
 
 using namespace std;
 using namespace xercesc;
-
 
 bool ExecPreprocesor(const char *NazwaPliku, istringstream &IStrm4Cmds) {
   string Cmd4Preproc = "cpp -P ";
@@ -38,9 +39,6 @@ bool ExecPreprocesor(const char *NazwaPliku, istringstream &IStrm4Cmds) {
   IStrm4Cmds.str(OTmpStrm.str());
   return pclose(pProc) == 0;
 }
-
-
-
 
 
 /*!
@@ -72,7 +70,6 @@ bool ReadFile(const char* sFileName, Configuration &rConfig)
    pParser->setFeature(XMLUni::fgXercesDynamic, false);
    pParser->setFeature(XMLUni::fgXercesSchema, true);
    pParser->setFeature(XMLUni::fgXercesSchemaFullChecking, true);
-
    pParser->setFeature(XMLUni::fgXercesValidationErrorAsFatal, true);
 
    DefaultHandler* pHandler = new XMLInterp4Config(rConfig);
@@ -131,15 +128,7 @@ bool ReadFile(const char* sFileName, Configuration &rConfig)
 
 
 
-int main(int argc, char *argv[]) {
-
-  //   Configuration   Config;
-
-  //   if (!ReadFile("config/config.xml",Config)) return 1;
-
-
-
-
+int main(int argc, char *argv[]) {  
   if(argc < 2) {
     cerr << "Za mało argumentów wywołania programu..." << endl;
     exit(-1);
@@ -147,10 +136,37 @@ int main(int argc, char *argv[]) {
   
   istringstream Strumien;
 
-  if ( !ExecPreprocesor(argv[1], Strumien)) {
+  if (!ExecPreprocesor(argv[1], Strumien)) {
       cerr << "Niepoprawny plik do wczytania..." << endl;
       exit(-1);
   }
+
+  Configuration   Config;
+  if (!ReadFile("config/config.xml",Config)) {
+    return 1;
+  }
+  
+  
+  // MIEJSCE NA TESTY 
+  /*
+  Testy TEST;
+  //if(TEST.TworzenieBibliotekiMove()){
+  // if(TEST.TworzenieCmdBibliotek()){
+  // if(TEST.TworzenieKolekcjiBibliotek()){
+  // if(TEST.CzytanieParametorw(Strumien)){
+  //if(TEST.WektorCmd(Strumien)){
+    cout << "Poprawnie wykonano test. Działa." << endl;
+    return 1;
+  }
+  else{
+    cerr << "Coś poszło nie tak :(. Zabijam się..." << endl;
+    exit(-1);
+  }
+  */
+  
+  
+  
+  
   
   Set4LibInterfaces Bib;
   Bib.AddLibInterface("Move");
@@ -158,29 +174,20 @@ int main(int argc, char *argv[]) {
   Bib.AddLibInterface("Set");
   Bib.AddLibInterface("Pause");
   
+  vector<Interp4Command*> CmdCollection;
   
   string Name;
-  Strumien >> Name;
-  Interp4Command *tmp = Bib[Name]->getCmd();
-  tmp->ReadParams(Strumien);
-  tmp->PrintSyntax();
-  tmp->PrintCmd();
-  delete tmp;
+  while(!Strumien.eof()) {
+    Strumien >> Name;
+    if(Name.length() > 0){
+      CmdCollection.push_back(Bib[Name]->getCmd());
+      CmdCollection.back()->ReadParams(Strumien);
+    }
+  }
   
-  string Name2;
-  Strumien >> Name2;
-  Interp4Command *tmp2 = Bib[Name2]->getCmd();
-  tmp2->ReadParams(Strumien);
-  tmp2->PrintSyntax();
-  tmp2->PrintCmd();
-  delete tmp2;
+  for(Interp4Command* cmd : CmdCollection){
+    cmd->PrintSyntax();
+    cmd->PrintCmd();
+  }
   
-  string Name3;
-  Strumien >> Name3;
-  Interp4Command *tmp3 = Bib[Name3]->getCmd();
-  tmp3->ReadParams(Strumien);
-  tmp3->PrintSyntax();
-  tmp3->PrintCmd();
-  delete tmp3;
-
 }

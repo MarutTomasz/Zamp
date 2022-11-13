@@ -1,5 +1,5 @@
 __start__: obj libs interp __plugin__
-	export LD_LIBRARY_PATH="./libs"; ./interp opis_dzialan.cmd
+	export LD_LIBRARY_PATH="./libs"; ./interp config/opis_dzialan.cmd
 
 obj:
 	mkdir obj
@@ -14,16 +14,22 @@ __plugin__:
 CPPFLAGS=-Wall -pedantic -std=c++17 -Iinc
 LDFLAGS=-Wall
 
-interp: obj/Set4LibInterfaces.o obj/LibInterface.o obj/main.o obj/xmlinterp.o
-	g++ ${LDFLAGS} -o interp  obj/main.o obj/LibInterface.o obj/Set4LibInterfaces.o obj/xmlinterp.o -ldl -lxerces-c
+interp: obj/Set4LibInterfaces.o obj/LibInterface.o obj/main.o obj/xmlinterp.o obj/Testy.o obj/Scena.o
+	g++ ${LDFLAGS} -o interp  obj/main.o obj/LibInterface.o obj/Set4LibInterfaces.o obj/xmlinterp.o obj/Testy.o obj/Scena.o -ldl -lxerces-c
 
 obj/LibInterface.o: inc/LibInterface.hh inc/Interp4Command.hh src/LibInterface.cpp
 	g++ -c ${CPPFLAGS} -o obj/LibInterface.o src/LibInterface.cpp
 
+obj/Scena.o: inc/Scena.hh inc/MobileObj.hh src/Scena.cpp
+	g++ -c ${CPPFLAGS} -o obj/Scena.o src/Scena.cpp
+
 obj/xmlinterp.o: src/xmlinterp.cpp inc/xmlinterp.hh
 	g++ -c ${CPPFLAGS} -o obj/xmlinterp.o src/xmlinterp.cpp
 
-obj/main.o: src/main.cpp inc/Interp4Command.hh inc/LibInterface.hh inc/Set4LibInterfaces.hh inc/xmlinterp.hh
+obj/Testy.o: inc/Testy.hh src/Testy.cpp
+	g++ -c ${CPPFLAGS} -o obj/Testy.o src/Testy.cpp
+
+obj/main.o: src/main.cpp inc/Interp4Command.hh inc/LibInterface.hh inc/Set4LibInterfaces.hh inc/xmlinterp.hh inc/Testy.hh inc/Scena.hh
 	g++ -c ${CPPFLAGS} -o obj/main.o src/main.cpp
 
 obj/Set4LibInterfaces.o: inc/LibInterface.hh inc/Set4LibInterfaces.hh src/Set4LibInterfaces.cpp

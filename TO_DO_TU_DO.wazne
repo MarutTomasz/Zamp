@@ -1,0 +1,33 @@
+PLIK OBJDATA.HH
+     Przerobic strukture zeby posluzyla bezpośrednio do generowania napisów.
+     W czytaniu Xml dane sa pobierane w char* więc najlepiej ta klasa je przechowywała
+     Potem w MobileObj z niezbednych napisow robione beda tymczasowe Vektory
+     Sama strukture mozna przebobic na MAPE nazw i Vectorów napisow, zeby mozna bylo
+     łatwo indeksować i iterowac w funkcji ProcessCubeAttrs
+     Sama funkcja czytania ma być metodą klasy ProgramInterpreter, więc nie będzie problemu z przekazywaniem parametrów
+
+
+PLIK PROGRAMINTERPRETER   -- Giga klasa All For One
+     Napisać go xD
+     Ma zawierac: Scene, LibMenagera, Socet do Servera, Configurację odczytaną z XML, Vector Cmd może tez
+
+     Jako metody jest czytanie pliku XML, wysyłanie rzeczy na serwer i exec vectora Cmd
+
+
+PLIK XMLINTERP
+     Zmodyfikować istniejące funkcje na własne potrzeby, głównie dodać pola które zainicjowane będie wskażnikiem na Configurację, umożliwi to pisanie beżpośrenio do wymaganych instancji ObjData oraz napisów z nazwami bibliotek.
+     Pilnować sprawdzania poprawności.
+
+     GDYBY KTOŚ (Ja w przyszłości) CZEGOŚ SZUKAŁ, NIECH PODĄŻA ZA PAJĄKAMI (Kom w pliku)
+
+
+
+PLIK CONFUGURATION
+     Dostosować do odpowiedniego czytania i ogólnie zrobić metody set/get
+     Pola powinny być git (chyba)
+
+PLIK SCENA
+     Dodać poprawne tworzenie mapy obiektów Mobilnych, wykorzystując dane z Configuracji
+
+     
+     

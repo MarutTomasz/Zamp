@@ -7,12 +7,25 @@
 #endif
 
 #include "MobileObj.hh"
+#include <map>
+#include <memory>
+#include "Configuration.hh"
+
+using namespace std;
+
 
 class Scena {
+private:
+  map<string,shared_ptr<MobileObj>> _Set_MobileObj;
 public:
-  MobileObj* FindMobileObj(const char *sName);
-  void AddMobileObj(MobileObj *pMobObj);
+  Scena();
+  ~Scena();
+  shared_ptr<MobileObj> FindMobileObj(const char *sObjName);
+  shared_ptr<MobileObj> FindMobileObj(const string &rObjName);
+  void AddMobileObj(Configuration *pConfig);
 
+  shared_ptr<MobileObj> operator [] (string &rName); 
+  shared_ptr<MobileObj> operator [] (char *sName);
 };
 
 
