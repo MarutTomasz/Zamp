@@ -14,8 +14,8 @@ __plugin__:
 CPPFLAGS=-Wall -pedantic -std=c++17 -Iinc
 LDFLAGS=-Wall
 
-interp: obj/Set4LibInterfaces.o obj/LibInterface.o obj/main.o obj/xmlinterp.o obj/Testy.o obj/Scena.o
-	g++ ${LDFLAGS} -o interp  obj/main.o obj/LibInterface.o obj/Set4LibInterfaces.o obj/xmlinterp.o obj/Testy.o obj/Scena.o -ldl -lxerces-c
+interp: obj/Set4LibInterfaces.o obj/LibInterface.o obj/main.o obj/xmlinterp.o obj/Testy.o obj/Scena.o obj/ProgramInterpreter.o
+	g++ ${LDFLAGS} -o interp  obj/main.o obj/LibInterface.o obj/Set4LibInterfaces.o obj/xmlinterp.o obj/Testy.o obj/Scena.o obj/ProgramInterpreter.o -ldl -lxerces-c
 
 obj/LibInterface.o: inc/LibInterface.hh inc/Interp4Command.hh src/LibInterface.cpp
 	g++ -c ${CPPFLAGS} -o obj/LibInterface.o src/LibInterface.cpp
@@ -29,11 +29,14 @@ obj/xmlinterp.o: src/xmlinterp.cpp inc/xmlinterp.hh
 obj/Testy.o: inc/Testy.hh src/Testy.cpp
 	g++ -c ${CPPFLAGS} -o obj/Testy.o src/Testy.cpp
 
-obj/main.o: src/main.cpp inc/Interp4Command.hh inc/LibInterface.hh inc/Set4LibInterfaces.hh inc/xmlinterp.hh inc/Testy.hh inc/Scena.hh
+obj/main.o: src/main.cpp inc/Interp4Command.hh inc/LibInterface.hh inc/Set4LibInterfaces.hh inc/xmlinterp.hh inc/Testy.hh inc/Scena.hh inc/ProgramInterpreter.hh
 	g++ -c ${CPPFLAGS} -o obj/main.o src/main.cpp
 
 obj/Set4LibInterfaces.o: inc/LibInterface.hh inc/Set4LibInterfaces.hh src/Set4LibInterfaces.cpp
 	g++ -c ${CPPFLAGS} -o obj/Set4LibInterfaces.o src/Set4LibInterfaces.cpp
+
+obj/ProgramInterpreter.o: src/ProgramInterpreter.cpp inc/Set4LibInterfaces.hh inc/xmlinterp.hh inc/ProgramInterpreter.hh inc/Scena.hh
+	g++ -c ${CPPFLAGS} -o obj/ProgramInterpreter.o src/ProgramInterpreter.cpp
 
 clean:
 	rm -f obj/* interp core*

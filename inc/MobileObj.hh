@@ -4,7 +4,8 @@
 
 #include <string>
 #include "Vector3D.hh"
-
+#include <iostream>
+#include <sstream>
 
 /*!
  * \file
@@ -57,20 +58,6 @@
 	* że współrzędne wyrażone są w metrach.
         */
        Vector3D  _Position_m;
-
-
-
-      
-       /*!
-        * \brief Wartości skalujące rozmiar obiektu.
-	*
-	* Wartości skalujące rozmiar obiektu.
-        */
-       Vector3D  _Scale;
-
-
-
-
       
        /*!
         * \brief Nazwa obiektu, która go indentyfikuje.
@@ -129,7 +116,7 @@
        * w trybie tylko do odczytu.
        * Domyślnie przyjmuje się, że jest to geometryczny środek bryły.
        */
-       const Vector3D & GetPositoin_m() const { return _Position_m; }
+       const Vector3D & GetPosition_m() const { return _Position_m; }
       /*!
        * \brief Udostępnia współrzędne położenia obiektu w trybie modyfikacji.
        *
@@ -147,11 +134,6 @@
        *                     że są one wyrażone w metrach.
        */
        void SetPosition_m(const Vector3D &rPos_m) { _Position_m = rPos_m; }
-
-
-      Vector3D & UseScale() { return _Scale; }
-      void SetScale(const Vector3D &rScale) { _Scale = rScale; }
-
 
       /*!
        * \brief Zmienia nazwę obiektu.

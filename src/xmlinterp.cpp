@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <iostream>
 
-
+#define DUPA cout << "TU JEST DUPAAAAA" << endl << endl;
 
 using namespace std;
 
@@ -14,8 +14,8 @@ using namespace std;
  * Konstruktor klasy. Tutaj należy zainicjalizować wszystkie
  * dodatkowe pola.
  */
-XMLInterp4Config::XMLInterp4Config(Configuration &rConfig)
-{
+XMLInterp4Config::XMLInterp4Config(Configuration *rConfig) {
+  _Conf = rConfig;
 }
 
 
@@ -23,8 +23,7 @@ XMLInterp4Config::XMLInterp4Config(Configuration &rConfig)
  * Metoda wywoływana jest bezpośrednio przed rozpoczęciem
  * przetwarzana dokumentu XML.
  */
-void XMLInterp4Config::startDocument()
-{
+void XMLInterp4Config::startDocument() {
   cout << "*** Rozpoczecie przetwarzania dokumentu XML." << endl;
 }
 
@@ -33,21 +32,29 @@ void XMLInterp4Config::startDocument()
  * Metoda wywoływana jest bezpośrednio po zakończeniu
  * przetwarzana dokumentu XML.
  */
-void XMLInterp4Config::endDocument()
-{
+void XMLInterp4Config::endDocument() {
   cout << "=== Koniec przetwarzania dokumentu XML." << endl;
+
+  for(long unsigned int i = 0; i < _Conf->GetLibsVector().size(); ++i) 
+    cout << _Conf->GetLibsVector()[i] << endl;
+  
+  for(long unsigned int i = 0; i < _Conf->GetObjVector().size(); ++i) {
+    cout << _Conf->GetObjVector()[i].GetName() << endl;
+    cout << _Conf->GetObjVector()[i].GetRGB() << endl;
+    cout << _Conf->GetObjVector()[i].GetShift() << endl;
+    cout << _Conf->GetObjVector()[i].GetTrans() << endl;
+    cout << _Conf->GetObjVector()[i].GetScale() << endl;
+    cout << _Conf->GetObjVector()[i].GetRotXYZ() << endl;
+  }
+
 }
-
-
-
 
 
 /*!
  * Analizuje atrybuty elementu XML \p "Lib" i odpowiednio je interpretuje.
  * \param[in] rAttrs - atrybuty elementu XML \p "Lib".
  */
-void XMLInterp4Config::ProcessLibAttrs(const xercesc::Attributes  &rAttrs)
-{
+void XMLInterp4Config::ProcessLibAttrs(const xercesc::Attributes  &rAttrs) {
  if (rAttrs.getLength() != 1) {
       cerr << "Zla ilosc atrybutow dla \"Lib\"" << endl;
       exit(1);
@@ -63,9 +70,10 @@ void XMLInterp4Config::ProcessLibAttrs(const xercesc::Attributes  &rAttrs)
  XMLSize_t  Size = 0;
  char* sLibName = xercesc::XMLString::transcode(rAttrs.getValue(Size));
 
- cout << "  Nazwa biblioteki: " << sLibName << endl;
-
- // Tu trzeba wpisać własny kod ...
+  cout << "  Nazwa biblioteki: " << sLibName << endl;
+ DUPA;
+ _Conf->AddLib(sLibName);
+ DUPA;
 
  xercesc::XMLString::release(&sParamName);
  xercesc::XMLString::release(&sLibName);
@@ -77,8 +85,7 @@ void XMLInterp4Config::ProcessLibAttrs(const xercesc::Attributes  &rAttrs)
  * to pobiera wartości atrybutów (w postaci napisów) i przekazuje ...
  * \param[in] rAttrs - atrybuty elementu XML \p "Cube".
  */
-void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes  &rAttrs)
-{
+void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes  &rAttrs) {
  if (rAttrs.getLength() < 1) {
       cerr << "Zla ilosc atrybutow dla \"Cube\"" << endl;
       exit(1);
@@ -89,58 +96,65 @@ void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes  &rAttrs)
   *  Sprawdzamy, czy na pewno jest to Name i Value.
   */
 
- char* sName_Name = xercesc::XMLString::transcode(rAttrs.getQName(0));
- char* sName_Scale = xercesc::XMLString::transcode(rAttrs.getQName(1));
- char* sName_RGB = xercesc::XMLString::transcode(rAttrs.getQName(2));
+ // char* sName_Name = xercesc::XMLString::transcode(rAttrs.getQName(0));
+ // char* sName_Scale = xercesc::XMLString::transcode(rAttrs.getQName(1));
+ // char* sName_RGB = xercesc::XMLString::transcode(rAttrs.getQName(rAttrs.getLength()-1));
 
- XMLSize_t  Index = 0;
- char* sValue_Name    = xercesc::XMLString::transcode(rAttrs.getValue(Index));
- char* sValue_Scale = xercesc::XMLString::transcode(rAttrs.getValue(1));
- char* sValue_RGB     = xercesc::XMLString::transcode(rAttrs.getValue(2));
+ // XMLSize_t  Index = 0;
+ // char* sValue_Name    = xercesc::XMLString::transcode(rAttrs.getValue(Index));
+ // char* sValue_Scale = xercesc::XMLString::transcode(rAttrs.getValue(1));
+ // char* sValue_RGB     = xercesc::XMLString::transcode(rAttrs.getValue(2));
 
 
- //-----------------------------------------------------------------------------
- // Wyświetlenie nazw atrybutów i ich "wartości"
- //
- cout << " Atrybuty:" << endl
-      << "     " << sName_Name << " = \"" << sValue_Name << "\"" << endl
-      << "     " << sName_Scale << " = \"" << sValue_Scale << "\"" << endl
-      << "     " << sName_RGB << " = \"" << sValue_RGB << "\"" << endl   
-      << endl; 
- //-----------------------------------------------------------------------------
- // Przykład czytania wartości parametrów
- // Ten przykład jest zrobiony "na piechotę" wykorzystując osobne zmienne.
- // Skala powinna być wektorem. Czytanie powinno być rezlizowane z wykorzysaniem
- // wektorów, np.
- //
- //
- // istringstream IStrm;
- // IStrm.str(sValue_Scale);
- // Vector3D  Scale;
- //
- // IStrm >> Scale;
- //
- istringstream   IStrm;
+ ObjData dane;
  
- IStrm.str(sValue_Scale);
- double  Sx,Sy,Sz;
+ for(XMLSize_t i = 0; i < rAttrs.getLength(); ++i) {
+   char* sName = xercesc::XMLString::transcode(rAttrs.getQName(i));
+   char* sValue = xercesc::XMLString::transcode(rAttrs.getValue(i));
+   //   cout << " Atrybuty:" << endl
+   //	<< "     " << sName << " = \"" << sValue << "\"" << endl << endl;
 
- IStrm >> Sx >> Sy >> Sz;
- if (IStrm.fail()) {
+   istringstream IStrm;
+   IStrm.str(sValue);
+   Vector3D value;
+   string name;
+
+   if(strcmp(sName,"Name") == 0)
+     IStrm >> name;
+   else
+     IStrm >> value;
+   
+      if (IStrm.fail()) {
      cerr << " Blad!!!" << endl;
- } else {
-     cout << " Czytanie wartosci OK!!!" << endl;
-     cout << "     " << Sx << "  " << Sy << "  " << Sz << endl;
+   }
+      //   else {
+      // cout << " Czytanie wartosci OK!!!" << endl;
+      // }
+
+   
+   if(strcmp(sName,"Name") == 0)
+     dane.SetName(name);
+
+   else if(strcmp(sName,"Scale") == 0)
+     dane.SetScale(value);
+
+   else if(strcmp(sName,"Shift") == 0)
+     dane.SetShift(value);
+
+   else if(strcmp(sName,"RotXYZ") == 0)
+     dane.SetRotXYZ(value);
+
+   else if(strcmp(sName,"Trans") == 0)
+     dane.SetTrans(value);
+
+   else if(strcmp(sName,"RGB") == 0)
+     dane.SetRGB(value);   
+   
+   xercesc::XMLString::release(&sName);
+   xercesc::XMLString::release(&sValue);
  }
-
- // Tu trzeba wstawić odpowiednio własny kod ...
-
- xercesc::XMLString::release(&sName_Name);
- xercesc::XMLString::release(&sName_Scale);
- xercesc::XMLString::release(&sName_RGB);
- xercesc::XMLString::release(&sValue_Name);
- xercesc::XMLString::release(&sValue_Scale);
- xercesc::XMLString::release(&sValue_RGB);
+   _Conf->AddObj(dane);
+ 
 }
 
 
@@ -160,8 +174,7 @@ void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes  &rAttrs)
  */
 void XMLInterp4Config::WhenStartElement( const std::string           &rElemName,
 		                         const xercesc::Attributes   &rAttrs
-                                       )
-{
+                                       ) {
   if (rElemName == "Lib") {
     ProcessLibAttrs(rAttrs);   return;   
   }
@@ -202,8 +215,7 @@ void XMLInterp4Config::startElement(  const   XMLCh* const            pURI,
                                       const   XMLCh* const            pLocalName,
                                       const   XMLCh* const            pQName,
 				      const   xercesc::Attributes&    rAttrs
-                                    )
-{
+                                    ) {
   char* sElemName = xercesc::XMLString::transcode(pLocalName);
   cout << "+++ Poczatek elementu: "<< sElemName << endl;
 
@@ -244,8 +256,7 @@ void XMLInterp4Config::startElement(  const   XMLCh* const            pURI,
 void XMLInterp4Config::endElement(  const   XMLCh* const    pURI,
                                     const   XMLCh* const    pLocalName,
                                     const   XMLCh* const    pQName
-                                 )
-{
+                                 ) {
    char* sURI =  xercesc::XMLString::transcode(pURI);
    char* sElemName = xercesc::XMLString::transcode(pLocalName);
    char* sQName =  xercesc::XMLString::transcode(pQName);
@@ -269,8 +280,7 @@ void XMLInterp4Config::endElement(  const   XMLCh* const    pURI,
  * \param[in] rException - zawiera informacje dotyczące błędu w dokumencie,
  *                         linii, kolumny itp.
  */
-void XMLInterp4Config::fatalError(const xercesc::SAXParseException&  rException)
-{
+void XMLInterp4Config::fatalError(const xercesc::SAXParseException&  rException) {
    char* sMessage = xercesc::XMLString::transcode(rException.getMessage());
    char* sSystemId = xercesc::XMLString::transcode(rException.getSystemId());
 
@@ -293,8 +303,7 @@ void XMLInterp4Config::fatalError(const xercesc::SAXParseException&  rException)
  *                     te to opis błędu oraz numer linii, w której
  *                     wystąpił błąd.
  */
-void XMLInterp4Config::error(const xercesc::SAXParseException&  rException)
-{
+void XMLInterp4Config::error(const xercesc::SAXParseException&  rException) {
   cerr << "Blad ..." << endl;
 
   /*
@@ -310,8 +319,7 @@ void XMLInterp4Config::error(const xercesc::SAXParseException&  rException)
  * \param[in] rException - zawiera informacje dotyczące błędu w dokumencie,
  *                         linii, kolumny itp.
  */
-void XMLInterp4Config::warning(const xercesc::SAXParseException&  rException)  
-{
+void XMLInterp4Config::warning(const xercesc::SAXParseException&  rException) {
   cerr << "Ostrzezenie ..." << endl;
 
   /*
