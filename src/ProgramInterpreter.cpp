@@ -1,26 +1,66 @@
 #include "ProgramInterpreter.hh"
 
+
+
 ProgramInterpreter::ProgramInterpreter() {
   rConfig = new Configuration;
 }
 
-bool ProgramInterpreter::ExecProgram(const char* FileName) {
+bool ProgramInterpreter::ExecProgram(const char* NazwaPliku) {
+  string Cmd4Preproc = "cpp -P ";
+  char Line[LINE_SIZE];
+  ostringstream OTmpStrm;
+  istringstream Strumien;
 
+  
+  Cmd4Preproc += NazwaPliku;
+  FILE* pProc = popen(Cmd4Preproc.c_str(),"r");
+
+  if (!pProc)
+    return false;
+
+  while (fgets(Line,LINE_SIZE,pProc)) {
+    OTmpStrm << Line;
+  }
+
+  Strumien.str(OTmpStrm.str());
+  vector<Interp4Command*> CmdCollection;
+
+  string Name;
+  while(!Strumien.eof()) {
+    Strumien >> Name;
+    if(Name.length() > 0){
+      CmdCollection.push_back(_LibMenager[Name]->getCmd());
+      CmdCollection.back()->ReadParams(Strumien);
+    }
+  }
+  
+  for(Interp4Command* cmd : CmdCollection){
+    //    cmd->ExecCmd(_Scn,Socket2Serv);
+    cmd->PrintCmd();
+  }
+  
+  
+  
 }
 
 
 bool ProgramInterpreter::SendSceneState2Server() {
   for (int i = 0; i < rConfig->GetObjVector().size(); ++i){
     stringstream Napis;
-    
-    Napis << "AddObj Name=" << rConfig->GetObjVector()[i].GetName() << "\n";
-    
-    cout << Napis.str();
+    ObjData tmp = rConfig->GetObjVector()[i];
+    Napis << "AddObj Name=" << tmp.GetName() << " RGB="  << tmp.GetRGB() << "  Scale=" << tmp.GetScale() <<
+      " Shift=" << tmp.GetShift() << " RotXYZ_deg=" << tmp.GetRotXYZ() << " Trans_m=" << tmp.GetTrans() <<"\n";
+
+    const string tmp2 = Napis.str();
+    const char *napis = tmp2.c_str();
+    Send(Socket2Serv,napis);
     
     
     
   }
   
+  delete rConfig;
 }
 
 

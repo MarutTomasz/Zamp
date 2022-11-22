@@ -10,6 +10,7 @@
 #include <map>
 #include <memory>
 #include "Configuration.hh"
+#include "Send.hh"
 
 using namespace std;
 

@@ -2,7 +2,7 @@
 #define  INTERP4COMMAND_HH
 
 #include <iostream>
-#include "MobileObj.hh"
+#include "Scena.hh"
 #include <string>
 
 using namespace std;
@@ -43,7 +43,7 @@ using namespace std;
    /*!
     * \brief Wykonuje polecenie oraz wizualizuje jego realizację.
     */
-   virtual bool ExecCmd( MobileObj *pMobObj, int Socket ) const = 0;
+   virtual bool ExecCmd(Scena *pScene, int Socket ) const = 0;
    /*!
     * \brief Czyta wartości parametrów danego polecenia.
     */

@@ -10,7 +10,7 @@
 #include "Vector3D.hh"
 #include "Scena.hh"
 #include "ProgramInterpreter.hh"
-
+#include "Send.hh"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -24,6 +24,8 @@
 #define PORT 2926
 #define LINE_SIZE 500
 
+
+/*
 bool ExecPreprocesor(const char *NazwaPliku, istringstream &IStrm4Cmds) {
   string Cmd4Preproc = "cpp -P ";
   char Line[LINE_SIZE];
@@ -42,8 +44,7 @@ bool ExecPreprocesor(const char *NazwaPliku, istringstream &IStrm4Cmds) {
   IStrm4Cmds.str(OTmpStrm.str());
   return pclose(pProc) == 0;
 }
-
-
+*/
 
 /*!
  * Otwiera połączenie sieciowe
@@ -87,12 +88,12 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
   
-  istringstream Strumien;
+  //  istringstream Strumien;
 
-  if (!ExecPreprocesor(argv[1], Strumien)) {
-      cerr << "Niepoprawny plik do wczytania..." << endl;
-      exit(-1);
-  }
+  //  if (!ExecPreprocesor(argv[1], Strumien)) {
+  //    cerr << "Niepoprawny plik do wczytania..." << endl;
+  //     exit(-1);
+  // }
 
    ProgramInterpreter Boss;
   
@@ -119,7 +120,7 @@ int main(int argc, char *argv[]) {
   }
   */
    
-   if (!OpenConnection(Boss.Socket2Serv)) return 1;
+   // if (!OpenConnection(Boss.Socket2Serv)) return 1;
 
    
    for(unsigned long int i = 0; i < Boss.rConfig->GetLibsVector().size(); ++i) {
@@ -128,25 +129,31 @@ int main(int argc, char *argv[]) {
    
    
    Boss._Scn.AddMobileObj(Boss.rConfig);
-   Boss.SendSceneState2Server();
+
+   
+   //Send(Boss.Socket2Serv"Clear\n");
+   
+   //Boss.SendSceneState2Server();
+   
+   Boss.ExecProgram(argv[1]);
    
    
-   
-   
-  vector<Interp4Command*> CmdCollection;
+   //  vector<Interp4Command*> CmdCollection;
   
-  string Name;
-  while(!Strumien.eof()) {
-    Strumien >> Name;
-    if(Name.length() > 0){
-      CmdCollection.push_back(Boss._LibMenager[Name]->getCmd());
-      CmdCollection.back()->ReadParams(Strumien);
-    }
-  }
+   //  string Name;
+   // while(!Strumien.eof()) {
+   //  Strumien >> Name;
+   //  if(Name.length() > 0){
+   //   CmdCollection.push_back(Boss._LibMenager[Name]->getCmd());
+   //   CmdCollection.back()->ReadParams(Strumien);
+   // }
+   //  }
   
-  for(Interp4Command* cmd : CmdCollection){
-    cmd->PrintSyntax();
-    cmd->PrintCmd();
-  }
-  
+   // for(Interp4Command* cmd : CmdCollection){
+   //  cmd->PrintSyntax();
+   //   cmd->PrintCmd();
+   //  }
+   
+   Send(Boss.Socket2Serv,"Close\n");
+   close(Boss.Socket2Serv);
 }

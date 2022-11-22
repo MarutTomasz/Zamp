@@ -5,6 +5,7 @@
 #include <memory>
 #include "Scena.hh"
 #include "Set4LibInterfaces.hh"
+#include "Send.hh"
 
 #include <xercesc/sax2/SAX2XMLReader.hpp>
 #include <xercesc/sax2/XMLReaderFactory.hpp>
@@ -14,9 +15,17 @@
 #include <list>
 
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
+
+#define LINE_SIZE 500
+
 using namespace std;
 using namespace xercesc;
-
 
 
 class ProgramInterpreter {
@@ -30,6 +39,5 @@ public:
   bool Read_XML_Config(const char* sFileName);
   ProgramInterpreter();
 };
-
 
 #endif
