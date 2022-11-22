@@ -5,8 +5,6 @@
 #include <cstdlib>
 #include <iostream>
 
-#define DUPA cout << "TU JEST DUPAAAAA" << endl << endl;
-
 using namespace std;
 
 
@@ -71,9 +69,7 @@ void XMLInterp4Config::ProcessLibAttrs(const xercesc::Attributes  &rAttrs) {
  char* sLibName = xercesc::XMLString::transcode(rAttrs.getValue(Size));
 
   cout << "  Nazwa biblioteki: " << sLibName << endl;
- DUPA;
  _Conf->AddLib(sLibName);
- DUPA;
 
  xercesc::XMLString::release(&sParamName);
  xercesc::XMLString::release(&sLibName);

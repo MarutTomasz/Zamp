@@ -11,6 +11,17 @@
 #include "Scena.hh"
 #include "ProgramInterpreter.hh"
 
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <thread>
+#include <mutex>
+
+
+#define PORT 2926
 #define LINE_SIZE 500
 
 bool ExecPreprocesor(const char *NazwaPliku, istringstream &IStrm4Cmds) {
@@ -31,6 +42,43 @@ bool ExecPreprocesor(const char *NazwaPliku, istringstream &IStrm4Cmds) {
   IStrm4Cmds.str(OTmpStrm.str());
   return pclose(pProc) == 0;
 }
+
+
+
+/*!
+ * Otwiera połączenie sieciowe
+ * \param[out]  rSocket - deskryptor gniazda, poprzez które może być
+ *                        realizowana komunikacja sieciowa.
+ */
+bool OpenConnection(int &rSocket)
+{
+  struct sockaddr_in  DaneAdSerw;
+
+  bzero((char *)&DaneAdSerw,sizeof(DaneAdSerw));
+
+  DaneAdSerw.sin_family = AF_INET;
+  DaneAdSerw.sin_addr.s_addr = inet_addr("127.0.0.1");
+  DaneAdSerw.sin_port = htons(PORT);
+
+
+  rSocket = socket(AF_INET,SOCK_STREAM,0);
+
+  if (rSocket < 0) {
+     cerr << "*** Blad otwarcia gniazda." << endl;
+     return false;
+  }
+
+  if (connect(rSocket,(struct sockaddr*)&DaneAdSerw,sizeof(DaneAdSerw)) < 0)
+   {
+     cerr << "*** Brak mozliwosci polaczenia do portu: " << PORT << endl;
+     return false;
+   }
+  return true;
+}
+
+
+
+
 
 
 int main(int argc, char *argv[]) {  
@@ -70,23 +118,21 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
   */
+   
+   if (!OpenConnection(Boss.Socket2Serv)) return 1;
 
-  
-  for(unsigned long int i = 0; i < Boss.rConfig->GetLibsVector().size(); ++i) {
-    Boss._LibMenager.AddLibInterface(Boss.rConfig->GetLibsVector()[i]);
-  }
-
-
-  Boss._Scn.AddMobileObj(Boss.rConfig);
-  cout << endl << Boss._Scn["Podstawa"]->GetPosition_m() << endl;
-
-
-
-
-
-
-
-  
+   
+   for(unsigned long int i = 0; i < Boss.rConfig->GetLibsVector().size(); ++i) {
+     Boss._LibMenager.AddLibInterface(Boss.rConfig->GetLibsVector()[i]);
+   }
+   
+   
+   Boss._Scn.AddMobileObj(Boss.rConfig);
+   Boss.SendSceneState2Server();
+   
+   
+   
+   
   vector<Interp4Command*> CmdCollection;
   
   string Name;

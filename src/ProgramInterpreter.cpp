@@ -10,7 +10,17 @@ bool ProgramInterpreter::ExecProgram(const char* FileName) {
 
 
 bool ProgramInterpreter::SendSceneState2Server() {
-
+  for (int i = 0; i < rConfig->GetObjVector().size(); ++i){
+    stringstream Napis;
+    
+    Napis << "AddObj Name=" << rConfig->GetObjVector()[i].GetName() << "\n";
+    
+    cout << Napis.str();
+    
+    
+    
+  }
+  
 }
 
 

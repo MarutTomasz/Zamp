@@ -23,7 +23,7 @@ class ProgramInterpreter {
 public:
   Scena _Scn;
   Set4LibInterfaces _LibMenager;
-  int Socket2Serv = 2926;
+  int Socket2Serv;
   Configuration *rConfig;
   bool ExecProgram(const char* FileName);
   bool SendSceneState2Server();
