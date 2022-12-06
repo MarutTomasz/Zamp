@@ -6,6 +6,7 @@
 #include "Vector3D.hh"
 #include <iostream>
 #include <sstream>
+#include <mutex>
 
 /*!
  * \file
@@ -65,8 +66,9 @@
         * Nazwa obiektu, która go indentyfikuje. Z tego względu musi
         * musi to być nazwa unikalna wśród wszystkich obiektów na scenie.
         */
-       std::string  _Name;
+      std::string  _Name;
 
+      std::mutex _Guard; 
      public:
       /*!
        * \brief Udostępia wartość kąta \e roll.
@@ -148,6 +150,13 @@
 	* Udostępnia nazwę obiektu w trybie tylko do odczytu.
         */
        const std::string & GetName() const { return _Name; }
+
+
+
+      void LockAccess() { _Guard.lock(); }
+      void UnlockAccess() {_Guard.unlock(); }
+
+
     };
 
 

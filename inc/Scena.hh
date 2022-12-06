@@ -21,12 +21,16 @@ private:
 public:
   Scena();
   ~Scena();
-  shared_ptr<MobileObj> FindMobileObj(const char *sObjName);
-  shared_ptr<MobileObj> FindMobileObj(const string &rObjName);
+  shared_ptr<MobileObj> FindMobileObj(const char *sObjName) {  return _Set_MobileObj[sObjName]; }
+
+  shared_ptr<MobileObj> FindMobileObj(const string &rObjName){   return _Set_MobileObj[rObjName]; }
+
   void AddMobileObj(Configuration *pConfig);
 
-  shared_ptr<MobileObj> operator [] (string &rName); 
-  shared_ptr<MobileObj> operator [] (char *sName);
+  shared_ptr<MobileObj> operator [] (string &rName)  { return _Set_MobileObj[rName]; }
+
+  shared_ptr<MobileObj> operator [] (char *sName) {  return _Set_MobileObj[sName]; }
+
 };
 
 

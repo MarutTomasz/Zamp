@@ -1,7 +1,5 @@
 #include "ProgramInterpreter.hh"
 
-
-
 ProgramInterpreter::ProgramInterpreter() {
   rConfig = new Configuration;
 }
@@ -24,24 +22,33 @@ bool ProgramInterpreter::ExecProgram(const char* NazwaPliku) {
   }
 
   Strumien.str(OTmpStrm.str());
-  vector<Interp4Command*> CmdCollection;
-
+  queue<Interp4Command*> Cmd;
+  queue<std::thread> ThreadCollection;
   string Name;
   while(!Strumien.eof()) {
     Strumien >> Name;
-    if(Name.length() > 0){
-      CmdCollection.push_back(_LibMenager[Name]->getCmd());
-      CmdCollection.back()->ReadParams(Strumien);
+    
+    if(Name == "Begin_Parallel_Actions") {
+    }
+    
+    else if(Name == "End_Parallel_Actions") {
+      
+      while(!Cmd.empty()){
+	ThreadCollection.push(thread(&Interp4Command::ExecCmd,Cmd.front(),&_Scn,&Socket2Serv));
+	Cmd.pop();
+      }
+      while(!ThreadCollection.empty()){
+	ThreadCollection.front().join();	
+	ThreadCollection.pop();
+      }
+    }
+    
+    else if(Name== "Move" || Name== "Rotate" || Name== "Pause" || Name== "Set"){	
+      Cmd.push(_LibMenager[Name]->getCmd());
+      Cmd.back()->ReadParams(Strumien);
     }
   }
-  
-  for(Interp4Command* cmd : CmdCollection){
-    //    cmd->ExecCmd(_Scn,Socket2Serv);
-    cmd->PrintCmd();
-  }
-  
-  
-  
+  return 1;
 }
 
 
@@ -51,13 +58,10 @@ bool ProgramInterpreter::SendSceneState2Server() {
     ObjData tmp = rConfig->GetObjVector()[i];
     Napis << "AddObj Name=" << tmp.GetName() << " RGB="  << tmp.GetRGB() << "  Scale=" << tmp.GetScale() <<
       " Shift=" << tmp.GetShift() << " RotXYZ_deg=" << tmp.GetRotXYZ() << " Trans_m=" << tmp.GetTrans() <<"\n";
-
+    
     const string tmp2 = Napis.str();
     const char *napis = tmp2.c_str();
-    Send(Socket2Serv,napis);
-    
-    
-    
+    Send(Socket2Serv.GetSocket(),napis);      
   }
   
   delete rConfig;

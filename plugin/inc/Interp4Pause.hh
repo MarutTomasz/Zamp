@@ -42,7 +42,7 @@ public:
   /*!
    * \brief Wykonuje polecenie oraz wizualizuje jego realizację
    */
-  virtual bool ExecCmd(Scena  *pScena, int Socket) const;
+  virtual bool ExecCmd(Scena  *pScena, GuardedSocket *Socket) const;
   /*!
    * \brief Czyta wartości parametrów danego polecenia
    */

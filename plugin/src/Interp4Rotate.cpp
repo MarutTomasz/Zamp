@@ -11,6 +11,22 @@ extern "C" {
   const char* GetCmdName() { return "Rotate"; }
 }
 
+int Send(int Socket2Serv, const char *sMesg) {
+  ssize_t  IlWyslanych;
+  ssize_t  IlDoWyslania = (ssize_t) strlen(sMesg);
+  
+  while ((IlWyslanych = write(Socket2Serv,sMesg,IlDoWyslania)) > 0) {
+    IlDoWyslania -= IlWyslanych;
+    sMesg += IlWyslanych;
+  }
+  if (IlWyslanych < 0) {
+    cerr << "*** Blad przeslania napisu." << endl;
+  }
+  return 0;
+}
+
+
+
 
 /*!
  * \brief
@@ -53,12 +69,27 @@ const char* Interp4Rotate::GetCmdName() const
 /*!
  *
  */
-bool Interp4Rotate::ExecCmd(Scena *pScena,  int  Socket) const
+bool Interp4Rotate::ExecCmd(Scena *pScena,  GuardedSocket *Socket) const
 {
-  /*
-   *  Tu trzeba napisać odpowiedni kod.
-   */
-  return true;
+  for (double dst = _Angle_deg; dst > 0; dst-= 1){
+
+    pScena->FindMobileObj(_Name_obj)->LockAccess();
+    pScena->FindMobileObj(_Name_obj)->SetAng_Yaw_deg(pScena->FindMobileObj(_Name_obj)->GetAng_Yaw_deg() + 1); 
+    stringstream Napis;
+    Napis << "UpdateObj Name=" << pScena->FindMobileObj(_Name_obj)->GetName() << " RotXYZ_deg=(0,0," << pScena->FindMobileObj(_Name_obj)->GetAng_Yaw_deg() <<")\n";
+    
+    const string tmp2 = Napis.str();
+    const char *napis = tmp2.c_str();
+
+
+    Socket->UnlockAccess();
+    Send(Socket->GetSocket(),napis);
+    Socket->UnlockAccess();
+    pScena->FindMobileObj(_Name_obj)->UnlockAccess();
+    usleep(1000000/_Speed_degS);
+  }
+  
+  return true; 
 }
 
 

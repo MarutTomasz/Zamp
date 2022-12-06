@@ -137,10 +137,10 @@ void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes  &rAttrs) {
    else if(strcmp(sName,"Shift") == 0)
      dane.SetShift(value);
 
-   else if(strcmp(sName,"RotXYZ") == 0)
+   else if(strcmp(sName,"RotXYZ_deg") == 0)
      dane.SetRotXYZ(value);
 
-   else if(strcmp(sName,"Trans") == 0)
+   else if(strcmp(sName,"Trans_m") == 0)
      dane.SetTrans(value);
 
    else if(strcmp(sName,"RGB") == 0)

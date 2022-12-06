@@ -11,7 +11,7 @@ obj:
 CPPFLAGS=-Wall -fPIC -pedantic -std=c++17 -Iinc -I../inc
 LDFLAGS=-Wall -shared
 
-../libs/libInterp4Move.so: obj/Interp4Move.o
+../libs/libInterp4Move.so: obj/Interp4Move.o 
 	g++ ${LDFLAGS} -o ../libs/libInterp4Move.so obj/Interp4Move.o
 	@echo "  Wtyczka dla polecenia 'Move' zostala utworzona."
 
@@ -29,8 +29,8 @@ obj/Interp4Rotate.o: src/Interp4Rotate.cpp ../inc/Interp4Command.hh\
 	g++ -c ${CPPFLAGS} -o obj/Interp4Rotate.o src/Interp4Rotate.cpp
 
 
-../libs/libInterp4Set.so: obj/Interp4Set.o
-	g++ ${LDFLAGS} -o ../libs/libInterp4Set.so obj/Interp4Set.o
+../libs/libInterp4Set.so: obj/Interp4Set.o 
+	g++ ${LDFLAGS} -o ../libs/libInterp4Set.so obj/Interp4Set.o 
 	@echo "  Wtyczka dla polecenia 'Set' zostala utworzona."
 
 obj/Interp4Set.o: src/Interp4Set.cpp ../inc/Interp4Command.hh\
@@ -38,7 +38,7 @@ obj/Interp4Set.o: src/Interp4Set.cpp ../inc/Interp4Command.hh\
 	g++ -c ${CPPFLAGS} -o obj/Interp4Set.o src/Interp4Set.cpp
 
 
-../libs/libInterp4Pause.so: obj/Interp4Pause.o
+../libs/libInterp4Pause.so: obj/Interp4Pause.o 
 	g++ ${LDFLAGS} -o ../libs/libInterp4Pause.so obj/Interp4Pause.o
 	@echo "  Wtyczka dla polecenia 'Pause' zostala utworzona."
 

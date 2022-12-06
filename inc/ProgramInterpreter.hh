@@ -6,6 +6,8 @@
 #include "Scena.hh"
 #include "Set4LibInterfaces.hh"
 #include "Send.hh"
+#include "GuardedSocket.hh"
+
 
 #include <xercesc/sax2/SAX2XMLReader.hpp>
 #include <xercesc/sax2/XMLReaderFactory.hpp>
@@ -21,6 +23,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+#include <thread>
+#include <queue>
 
 #define LINE_SIZE 500
 
@@ -32,7 +36,7 @@ class ProgramInterpreter {
 public:
   Scena _Scn;
   Set4LibInterfaces _LibMenager;
-  int Socket2Serv;
+  GuardedSocket Socket2Serv;
   Configuration *rConfig;
   bool ExecProgram(const char* FileName);
   bool SendSceneState2Server();

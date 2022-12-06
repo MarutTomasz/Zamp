@@ -11,8 +11,8 @@ __plugin__:
 	cd plugin; make
 
 
-CPPFLAGS=-Wall -pedantic -std=c++17 -Iinc
-LDFLAGS=-Wall
+CPPFLAGS=-Wall -pedantic -std=c++17 -Iinc -pthread
+LDFLAGS=-Wall -pthread
 
 interp: obj/Set4LibInterfaces.o obj/LibInterface.o obj/main.o obj/xmlinterp.o obj/Testy.o obj/Scena.o obj/ProgramInterpreter.o obj/Send.o
 	g++ ${LDFLAGS} -o interp  obj/main.o obj/LibInterface.o obj/Set4LibInterfaces.o obj/xmlinterp.o obj/Testy.o obj/Scena.o obj/ProgramInterpreter.o obj/Send.o -ldl -lxerces-c
@@ -36,7 +36,7 @@ obj/Set4LibInterfaces.o: inc/LibInterface.hh inc/Set4LibInterfaces.hh src/Set4Li
 	g++ -c ${CPPFLAGS} -o obj/Set4LibInterfaces.o src/Set4LibInterfaces.cpp
 
 obj/ProgramInterpreter.o: src/ProgramInterpreter.cpp inc/Set4LibInterfaces.hh inc/xmlinterp.hh inc/ProgramInterpreter.hh inc/Scena.hh
-	g++ -c ${CPPFLAGS} -o obj/ProgramInterpreter.o src/ProgramInterpreter.cpp
+	g++ -c ${CPPFLAGS} -o obj/ProgramInterpreter.o src/ProgramInterpreter.cpp -lpthread
 
 obj/Send.o: inc/Send.hh src/Send.cpp
 	g++ -c ${CPPFLAGS} -o obj/Send.o src/Send.cpp

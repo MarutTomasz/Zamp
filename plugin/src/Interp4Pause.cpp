@@ -51,11 +51,9 @@ const char* Interp4Pause::GetCmdName() const
 /*!
  *
  */
-bool Interp4Pause::ExecCmd(Scena  *pScena,  int  Socket) const
+bool Interp4Pause::ExecCmd(Scena  *pScena, GuardedSocket *Socket) const
 {
-  /*
-   *  Tu trzeba napisać odpowiedni kod.
-   */
+  usleep(1000*_Time_ms);
   return true;
 }
 

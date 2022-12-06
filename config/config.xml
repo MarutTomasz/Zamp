@@ -6,12 +6,12 @@
       <Lib Name="libInterp4Set.so"/>
    </Plugins>
    <Objects>
-     <Cube Name="Podstawa" Shift="0 -0.5 0" Scale="0.7 0.7 0.2"
+     <Cube Name="Ob_A" Shift="0 -0.5 0" Scale="1.7 1.7 1.2"
                  RotXYZ_deg="10 0 0" Trans_m="0.1 0 0" RGB="255 0 0"/>
-     <Cube Name="Podstawa.Ramie1" Shift="0 -0.5 0" Scale="0.1 0.1 0.6"
+     <Cube Name="Ob_A.Ramie1" Shift="0 -0.5 0" Scale="1.1 1.1 1.6"
 	                                             RGB="250 250 0" Trans_m="0 0.7 0"/>
-     <Cube Name="Podstawa.Ramie1.Ramie2" Shift="0 -0.5 0"
-	         Scale="0.1 0.2 0.4" Trans_m="0 0.7 0"/>
+     <Cube Name="Ob_B" Shift="0 -0.5 0"
+	         Scale="1.1 1.2 1.4" Trans_m="2 0.7 0"/>
    </Objects>
   </Config>
   
